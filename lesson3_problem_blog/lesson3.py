@@ -18,35 +18,56 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-class Art(db.Model):
-    title = db.StringProperty(required = True)
-    art = db.TextProperty(required = True)
+
+class Post(db.Model):
+    subject = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
 
 class MainPage(Handler):
-    def render_front(self, title="", art="", error=""):
-        arts = db.GqlQuery("select * from Art order by created desc")
+    def render_front(self):
+        posts = db.GqlQuery("select * from Post order by created desc")
 
-        self.render("front.html", title=title, art=art, error=error, arts = arts)
+        self.render("index.html", posts = posts)
+
+    def get(self):
+        self.render_front()
+
+
+class NewPost(Handler):
+    def render_front(self, subject="", content="", error=""):
+        self.render("new.html", subject = subject, content = content, error = error)
 
     def get(self):
         self.render_front()
 
     def post(self):
-        title = self.request.get("title")
-        art = self.request.get("art")
+        subject = self.request.get("subject")
+        content = self.request.get("content")
 
-        if title and art:
-            a = Art(title = title, art = art)
-            a.put()
+        if subject and content:
+            p = Post(subject = subject, content = content)
+            p = p.put()
 
-            self.redirect("/")
+            self.redirect("/blog/%d" % p.id())
         else:
-            error = "we need both a title and some artwork!"
-            self.render_front(title, art, error)
+            error = "We need both a subject and content!"
+            self.render_front(subject, content, error)
 
-routes = [('/', MainPage),
+
+class PostHandler(Handler):
+    def render_front(self, post):
+        self.render("view.html", post = post)
+
+    def get(self, id):
+        post = Post.get_by_id(int(id))
+        self.render_front(post)
+
+
+routes = [(r'/blog', MainPage),
+          (r'/blog/newpost', NewPost),
+          (r'/blog/(\d+)', PostHandler),
           ]
 
 app = webapp2.WSGIApplication(routes,debug=True)

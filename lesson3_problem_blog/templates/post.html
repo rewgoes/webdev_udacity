@@ -1,0 +1,8 @@
+{% block post %}
+    <div class="post">
+        <div class="post-subject">
+            <a href="/blog/{{post.key().id()}}">{{post.subject}}</a>
+        </div>
+        <pre class="post-content">{{post.content}}</div>
+    </div>
+{% endblock %}
