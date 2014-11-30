@@ -23,7 +23,7 @@ class Post(db.Model):
     subject = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
-
+    #auto_now -> modified
 
 class MainPage(Handler):
     def render_front(self):

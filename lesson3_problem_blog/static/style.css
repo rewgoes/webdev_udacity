@@ -39,12 +39,32 @@ hr {
     margin-top: 20px;
 }
 
-.post-title {
+.post-heading {
+    position: relative;
+    border-bottom: 3px solid #666;
+}
+
+.post-subject, .post-subject a {
+    width: 600px;
+    font-style: normal;
+    text-decoration: none;
+    color: black;
     font-weight: bold;
     font-size: 20px;
 }
 
-.post-body {
+.post-created {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: gray;
+    width: 200px;
+    text-align: right;
+    font-style: italic;
+    font-size: 10px;
+}
+
+.post-content {
     margin: 0;
     font-size: 17px;
 }
