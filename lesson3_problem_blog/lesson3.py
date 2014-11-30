@@ -23,6 +23,7 @@ class Art(db.Model):
     art = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+
 class MainPage(Handler):
     def render_front(self, title="", art="", error=""):
         arts = db.GqlQuery("select * from Art order by created desc")
@@ -45,18 +46,7 @@ class MainPage(Handler):
             error = "we need both a title and some artwork!"
             self.render_front(title, art, error)
 
-class DeleteArt(Handler):
-    def get(self, art_id):
-        art_id = int(art_id)
-        art = Art.get_by_id(art_id)
-
-        if art:
-            db.delete(art)
-        self.redirect("/")
-
-
-routes = [(r'/', MainPage),
-          (r'/delete/(\d+)', DeleteArt),
+routes = [('/', MainPage),
           ]
 
 app = webapp2.WSGIApplication(routes,debug=True)
